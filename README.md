@@ -6,9 +6,9 @@
 
 Official RL training code for **TurnWise**, a framework for learning when to respond and when to wait in streaming video conversations.
 
-**Authors:** Shuai Dong, Kanghui Tian, Linghan Chen, Wenqi Shao, Hongrui Wu, Haowen Hou, Yongfu Zhu, Xuehui Wang, Ziyue Wang, Wenpu Liu, Weichu Xie, Yuqi Xu, Congcong Wang, Kaiwen Tuo, Caoyuan Ma, Taiqiang Wu, Ji Zhao, Wenzheng Chang, Dianyi Wang, Siyuan Wang, Zhongyu Wei, Yu Qiao, Jiaqi Wang.
+**Authors:** Shuai Dong, Kanghui Tian, Linghan Chen et al.
 
-**Affiliations:** Fudan University; Shanghai Innovation Institute; JD.com; Stanford University; Shanghai Artificial Intelligence Laboratory; The Chinese University of Hong Kong; Peking University; The University of Tokyo; The Hong Kong University of Science and Technology; The University of Hong Kong.
+**Affiliations:** Fudan University; Shanghai Innovation Institute; JD.com; Stanford University;
 
 ---
 
@@ -236,7 +236,7 @@ If you find TurnWise useful, please cite our paper:
 
 ## 🙏 Acknowledgements
 
-This codebase builds on [verl](https://github.com/verl-project/verl), [SGLang](https://github.com/sgl-project/sglang), [Qwen2.5-VL](https://github.com/QwenLM/Qwen2.5-VL), [Transformers](https://github.com/huggingface/transformers), and the MMDuet2 streaming training setup. We thank the authors for their open-source contributions.
+This codebase builds on [verl](https://github.com/verl-project/verl), [SGLang](https://github.com/sgl-project/sglang), [Qwen2.5-VL](https://github.com/QwenLM/Qwen2.5-VL), [Transformers](https://github.com/huggingface/transformers), and the [MMDuet2]([https://github.com/verl-project/verl](https://github.com/yellow-binary-tree/MMDuet2)) streaming training setup. We thank the authors for their open-source contributions.
 
 ## 📄 Third-party Licenses
 
