@@ -236,7 +236,7 @@ If you find TurnWise useful, please cite our paper:
 
 ## 🙏 Acknowledgements
 
-This codebase builds on [verl](https://github.com/verl-project/verl), [SGLang](https://github.com/sgl-project/sglang), [Qwen2.5-VL](https://github.com/QwenLM/Qwen2.5-VL), [Transformers](https://github.com/huggingface/transformers), and the [MMDuet2]([https://github.com/verl-project/verl](https://github.com/yellow-binary-tree/MMDuet2)) streaming training setup. We thank the authors for their open-source contributions.
+This codebase builds on [verl](https://github.com/verl-project/verl), [SGLang](https://github.com/sgl-project/sglang), [Qwen2.5-VL](https://github.com/QwenLM/Qwen2.5-VL), [Transformers](https://github.com/huggingface/transformers), and the [MMDuet2](https://github.com/yellow-binary-tree/MMDuet2) streaming training setup. We thank the authors for their open-source contributions.
 
 ## 📄 Third-party Licenses
 
