@@ -1,0 +1,189 @@
+data:
+  tokenizer: null
+  use_shm: false
+  train_files: ${oc.env:TRAIN_PARQUET}
+  val_files: []
+  prompt_key: prompt
+  reward_fn_key: data_source
+  max_prompt_length: 17100
+  max_response_length: 512
+  train_batch_size: 8
+  val_batch_size: null
+  return_raw_input_ids: false
+  return_raw_chat: true
+  return_full_prompt: false
+  shuffle: false
+  filter_overlong_prompts: false
+  filter_overlong_prompts_workers: 1
+  truncation: left
+  image_key: images
+  video_key: videos
+  trust_remote_code: false
+  custom_cls:
+    path: null
+    name: null
+  cache_dir: ${oc.env:OUTPUT_DIR}/cache
+actor_rollout_ref:
+  hybrid_engine: true
+  model:
+    path: ${oc.env:MODEL_PATH}
+    use_shm: false
+    external_lib: null
+    override_config: {}
+    enable_gradient_checkpointing: true
+    enable_activation_offload: false
+    use_remove_padding: true
+    lora_rank: 0
+    lora_alpha: 16
+    target_modules: all-linear
+    use_liger: false
+    use_fused_kernels: false
+    fused_kernel_options:
+      impl_backend: torch
+    trust_remote_code: false
+  actor:
+    strategy: fsdp
+    ppo_mini_batch_size: 8
+    ppo_micro_batch_size: null
+    ppo_micro_batch_size_per_gpu: 1
+    use_dynamic_bsz: false
+    ppo_max_token_len_per_gpu: 25650
+    grad_clip: 1.0
+    clip_ratio: 0.2
+    clip_ratio_low: 0.2
+    clip_ratio_high: 0.2
+    clip_ratio_c: 3.0
+    loss_agg_mode: turn-mean
+    entropy_coeff: 0
+    use_kl_loss: false
+    use_torch_compile: true
+    kl_loss_coef: 0.001
+    kl_loss_type: low_var_kl
+    ppo_epochs: 1
+    shuffle: false
+    ulysses_sequence_parallel_size: 1
+    entropy_from_logits_with_chunking: false
+    entropy_checkpointing: false
+    checkpoint:
+      save_contents:
+      - model
+      - optimizer
+      - extra
+      load_contents: ${actor_rollout_ref.actor.checkpoint.save_contents}
+    optim:
+      lr: 1.0e-06
+      lr_warmup_steps: -1
+      lr_warmup_steps_ratio: 0.0
+      min_lr_ratio: 0.0
+      num_cycles: 0.5
+      warmup_style: constant
+      total_training_steps: -1
+      weight_decay: 0.01
+      freeze_vision_tower: true
+    fsdp_config:
+      wrap_policy:
+        min_num_params: 0
+      param_offload: true
+      optimizer_offload: true
+      offload_policy: false
+      reshard_after_forward: true
+      fsdp_size: -1
+      forward_prefetch: false
+  ref:
+    strategy: fsdp
+    fsdp_config:
+      param_offload: true
+      reshard_after_forward: true
+      forward_prefetch: false
+      wrap_policy:
+        min_num_params: 0
+    use_torch_compile: ${actor_rollout_ref.actor.use_torch_compile}
+    log_prob_micro_batch_size: null
+    log_prob_micro_batch_size_per_gpu: 1
+    log_prob_use_dynamic_bsz: ${actor_rollout_ref.actor.use_dynamic_bsz}
+    log_prob_max_token_len_per_gpu: ${actor_rollout_ref.actor.ppo_max_token_len_per_gpu}
+    ulysses_sequence_parallel_size: ${actor_rollout_ref.actor.ulysses_sequence_parallel_size}
+    entropy_from_logits_with_chunking: false
+    entropy_checkpointing: false
+  rollout:
+    name: sglang
+    mode: sync
+    temperature: 1.2
+    top_k: 10
+    top_p: 1
+    use_fire_sampling: false
+    prompt_length: 17100
+    response_length: 8550
+    dtype: bfloat16
+    gpu_memory_utilization: 0.25
+    ignore_eos: false
+    enforce_eager: true
+    free_cache_engine: true
+    load_format: dummy_dtensor
+    layered_summon: false
+    tensor_model_parallel_size: 1
+    max_num_batched_tokens: 8192
+    max_model_len: null
+    max_num_seqs: 1024
+    log_prob_micro_batch_size: null
+    log_prob_micro_batch_size_per_gpu: 1
+    log_prob_use_dynamic_bsz: ${actor_rollout_ref.actor.use_dynamic_bsz}
+    log_prob_max_token_len_per_gpu: ${actor_rollout_ref.actor.ppo_max_token_len_per_gpu}
+    disable_log_stats: true
+    enable_chunked_prefill: true
+    do_sample: true
+    n: 4
+    engine_kwargs:
+      sglang:
+        attention_backend: flashinfer
+    multi_turn:
+      enable: true
+      max_turns: 100
+      tool_config_path: ${oc.env:TURNWISE_TOOL_CONFIG}
+      completion_callback: null
+      use_inference_chat_template: false
+      enable_tokenization_sanity_check: true
+      is_online_video_conversation: true
+    max_new_tokens_per_generation: 100
+reward_model:
+  enable: false
+  reward_manager: naive
+  launch_reward_fn_async: true
+custom_reward_function:
+  path: ${oc.env:TURNWISE_REWARD_FUNCTION}
+  name: credit_pauc_reward_function
+algorithm:
+  credit_assignment:
+    enabled: true
+    alpha_max: 1.0
+    warmup_ratio: 0.1
+    epsilon: 1.0e-06
+    advantage_clip: 5.0
+  gamma: 1.0
+  lam: 1.0
+  adv_estimator: grpo
+  norm_adv_by_std_in_grpo: true
+  use_kl_in_reward: false
+trainer:
+  balance_batch: true
+  total_epochs: 1
+  total_training_steps: null
+  project_name: turnwise
+  experiment_name: turnwise
+  logger:
+  - console
+  nnodes: 1
+  n_gpus_per_node: 8
+  save_freq: 80
+  resume_mode: disable
+  resume_from_path: null
+  critic_warmup: 0
+  default_hdfs_dir: null
+  del_local_ckpt_after_load: false
+  default_local_dir: ${oc.env:OUTPUT_DIR}
+  max_actor_ckpt_to_keep: 3
+  ray_wait_register_center_timeout: 300
+  device: cuda
+ray_init:
+  num_cpus: null
+  timeline_json_file: null

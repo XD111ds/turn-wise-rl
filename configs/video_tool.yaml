@@ -1,0 +1,18 @@
+tools:
+  - class_name: "verl.tools.online_video_provider.OnlineVideoProvider"
+    config:
+      annotation_paths:
+        - "${oc.env:RL_USER_TURNS_JSON}"
+    tool_schema:
+      type: "function"
+      function:
+        name: "online_video_provider"
+        description: "A tool to fetch the next user turn in video-text online conversation"
+        parameters:
+          type: "object"
+          properties:
+            question_id:
+              type: "string"
+            turn_id:
+              type: "int"
+          required: ["question_id", "turn_id"]
